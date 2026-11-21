@@ -1,0 +1,86 @@
+# The agent harness — guide for the human
+
+This repository is built by coding agents, commit by commit, inside a harness that keeps them on the
+plan and stops them from cutting corners. You own the specifications, the plan and the harness; the
+agent owns the implementation of one plan line at a time. Instructions say what to do; the gates
+make sure it was not done badly.
+
+## Layers
+
+| Layer | Files | Role |
+| --- | --- | --- |
+| Instructions (advisory) | `AGENTS.md` + nested `AGENTS.md`{% if 'claude-code' in harnesses %}, `CLAUDE.md` (imports it){% endif %} | Short map loaded every session; the nearest file to the edited code wins |
+| Procedures (on demand) | `.agents/skills/*/SKILL.md` | Start a session, implement a line, decide, review, test requirements, close a milestone, run lanes, draft a plan, audit the harness |
+| Sources of truth | `docs/specs/`, `docs/requirements.md`, `docs/adr/`, `CONTEXT.md` | What to build, in which words, under which decisions |
+| State | `docs/plan/plan.json`, `docs/plan/progress/`, git history | Where the work stands, carried from one fresh session to the next |
+| Gates (deterministic) | `.githooks/`, `scripts/harness/*.mjs`, CI | Refuse out-of-order commits, unplanned messages, deleted or skipped tests, uncovered requirements, edits to human-owned files, weakened thresholds |
+| Harness adapters | for {{ harnesses | join(', ') }} (table below) | Inject the status at session start and refuse forbidden edits and commands before they happen |
+| Configuration | `harness.config.json` | Every rule the gates apply: owned paths, id patterns, test detection, thresholds, commands |
+
+## Commit 0
+
+```bash
+node scripts/harness/install.mjs          # activates .githooks, checks Node ≥ 22
+{%- if profile == 'typescript' %}
+pnpm install
+{%- endif %}
+node scripts/harness/verify.mjs           # must be green
+git add -A
+HARNESS_HUMAN=1 git commit -m "chore: add the agent harness" -m "From the craft-harness template."
+```
+
+`HARNESS_*` variables are yours alone. The agent hook refuses commands that set them and `AGENTS.md`
+forbids them; on a shared repository, branch protection plus `.github/CODEOWNERS` make the rule hold
+for everyone.
+
+## Then
+
+1. Write `docs/specs/product.md`, `technical.md` (with ranked quality attributes) and
+   `docs/requirements.md`. The agent can draft requirements and a plan as a proposal: ask it to apply
+   skill `plan-from-spec`.
+2. Adopt the plan of the first milestone, mark checkpoint A done:
+   `HARNESS_HUMAN=1 HARNESS_PLAN_EDIT=1 HARNESS_HUMAN_GATE=A git commit …`
+3. Start sessions. One session = one plan line, in a fresh context. Suggested first message:
+
+   > Apply skill `start-session`, then `implement-line` for the next plan line. One line only.
+   > Stop and report if a stop condition of AGENTS.md occurs.
+
+4. Review each commit (a few minutes: the diff, the progress note, the review verdict), and at each
+   checkpoint the evidence pack in `docs/plan/checkpoints/`.
+
+## Parallel lanes (optional)
+
+When several lines are independent, give them `dependsOn` and `touches` in the plan. Then ask the
+agent to apply skill `run-lanes`: one worktree and one fresh agent per lane, merged one at a time
+by `scripts/harness/lanes.mjs finish`, which re-runs every gate on the merged result. Most software
+work is not parallel; keep the plan sequential unless the lines touch disjoint parts of the code.
+
+## Harnesses
+
+| Harness | Reads | Enforcement before the commit |
+| --- | --- | --- |
+| Claude Code | `CLAUDE.md` → `AGENTS.md`, `.claude/skills` → `.agents/skills`, `.claude/agents/reviewer.md` | `.claude/settings.json` hooks |
+| Codex | `AGENTS.md`, `.agents/skills` | `.codex/hooks.json` (trust it once with `/hooks`) |
+| DeepSeek Harness | `AGENTS.md`, `.agents/skills` | `.claude/settings.json` through its Claude Code hooks bridge |
+| Cursor | `AGENTS.md`, `.agents/skills` | `.claude/settings.json` (third-party import, on by default) |
+| GitHub Copilot | `AGENTS.md`, `.agents/skills` | none: git hooks and CI |
+| Gemini CLI | `AGENTS.md` through `.gemini/settings.json` | none: git hooks and CI |
+
+Whatever the harness, the git hooks and CI are the authority. Harness hooks only fail earlier.
+
+## What stays yours
+
+| When | You | How |
+| --- | --- | --- |
+| A checkpoint line (`humanGate`) | Decide, then mark it done | `HARNESS_HUMAN=1 HARNESS_HUMAN_GATE=<letter> git commit …` |
+| A plan line is wrong or missing | Edit `plan.json` | `HARNESS_HUMAN=1 HARNESS_PLAN_EDIT=1 git commit …` |
+| A test must really change | Allow it for one commit | `HARNESS_ALLOW_TEST_CHANGE=1 git commit …` |
+| Specs, requirements, ADRs, harness | Edit them | `HARNESS_HUMAN=1 git commit …` |
+| Accounts, secrets, deploys, paid services | Always by hand | The agent stops and asks |
+| A new model or harness version | Ask for skill `audit-harness` | Remove what is no longer load-bearing, one component at a time |
+
+## Updating the harness
+
+This project was generated with Copier; `.copier-answers.yml` remembers the template version and
+your answers. `uvx copier update` brings improvements of the template into this project with a
+three-way merge that keeps your changes. Review the result like any human commit.

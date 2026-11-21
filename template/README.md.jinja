@@ -1,0 +1,16 @@
+# {{ project_name }}
+
+{{ description }}
+
+Built by coding agents, one reviewed commit per plan line, inside a deterministic harness.
+
+- Human guide to the harness: `docs/harness/README.md`
+- Agent instructions: `AGENTS.md`
+- Where the work stands: `node scripts/harness/status.mjs`
+- Definition of done: `node scripts/harness/verify.mjs`
+{%- if profile == 'typescript' %}
+- Requirements: Node ≥ 22 (`.nvmrc`), pnpm (`packageManager` in `package.json`); `pnpm install`
+{%- else %}
+- Requirements: Node ≥ 22 for the harness scripts
+{%- endif %}
+- Specifications: `docs/specs/`, `docs/requirements.md`, decisions: `docs/adr/`, vocabulary: `CONTEXT.md`

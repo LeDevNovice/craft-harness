@@ -1,0 +1,37 @@
+{
+  "version": 1,
+  "milestones": [
+    {
+      "id": "{{ plan_prefix }}0",
+      "title": "Harness and foundations",
+      "lines": [
+        {
+          "id": "{{ plan_prefix }}0.1",
+          "message": "chore: add the agent harness",
+          "content": "AGENTS.md, skills, git hooks, harness scripts, plan, specification skeletons, harness adapters ({{ harnesses | join(', ') }})",
+          "verification": "`node scripts/harness/verify.mjs` is green",
+          "status": "provided",
+          "notes": "Commit 0, made by the human from the template."
+        },
+{%- if profile == 'typescript' %}
+        {
+          "id": "{{ plan_prefix }}0.2",
+          "message": "chore: add the TypeScript profile",
+          "content": "pnpm, strict TypeScript, Vitest, oxlint, Prettier, dependency-cruiser, `pnpm check` and `pnpm precommit`, one smoke test",
+          "verification": "`pnpm install && pnpm check`",
+          "status": "provided",
+          "notes": "Part of commit 0."
+        },
+{%- endif %}
+        {
+          "id": "{{ plan_prefix }}0.{% if profile == 'typescript' %}3{% else %}2{% endif %}",
+          "message": "docs: specify the first slice and adopt its plan",
+          "content": "Human: write docs/specs/product.md and technical.md (ranked quality attributes), docs/requirements.md, ADRs for the stack, then the plan of milestone {{ plan_prefix }}1. The agent may draft requirements and plan as a proposal (skill plan-from-spec).",
+          "verification": "Specs, requirements and milestone {{ plan_prefix }}1 committed by the human; `node scripts/harness/verify.mjs` is green",
+          "status": "todo",
+          "humanGate": "A"
+        }
+      ]
+    }
+  ]
+}

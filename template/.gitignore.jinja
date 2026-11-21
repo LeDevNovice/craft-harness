@@ -1,0 +1,17 @@
+node_modules/
+dist/
+coverage/
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+.claude/settings.local.json
+.claude/worktrees/
+CLAUDE.local.md
+AGENTS.override.md
+{%- if profile == 'typescript' %}
+*.tsbuildinfo
+reports/
+.stryker-tmp/
+{%- endif %}

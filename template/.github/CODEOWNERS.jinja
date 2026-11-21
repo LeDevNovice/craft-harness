@@ -1,0 +1,19 @@
+# Human-owned paths (harness.config.json → ownedPaths). With branch protection requiring code-owner
+# review, no change to them reaches main without the owner, whoever or whatever wrote it.
+/AGENTS.md                @{{ owner }}
+**/AGENTS.md              @{{ owner }}
+/CLAUDE.md                @{{ owner }}
+/harness.config.json      @{{ owner }}
+/.agents/                 @{{ owner }}
+/.claude/                 @{{ owner }}
+/.codex/                  @{{ owner }}
+/.cursor/                 @{{ owner }}
+/.gemini/                 @{{ owner }}
+/.githooks/               @{{ owner }}
+/.github/                 @{{ owner }}
+/scripts/harness/         @{{ owner }}
+/docs/specs/              @{{ owner }}
+/docs/requirements.md     @{{ owner }}
+/docs/adr/                @{{ owner }}
+/docs/harness/            @{{ owner }}
+/docs/plan/plan.json      @{{ owner }}
