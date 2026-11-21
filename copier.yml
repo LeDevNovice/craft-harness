@@ -1,0 +1,93 @@
+# craft-harness — Copier template.
+#   uvx copier copy gh:LeDevNovice/craft-harness my-project
+#   cd my-project && uvx copier update     # later, to bring template improvements in
+_min_copier_version: "9.4.0"
+_subdirectory: template
+_templates_suffix: .jinja
+_preserve_symlinks: true
+_answers_file: .copier-answers.yml
+
+project_name:
+  type: str
+  help: Project name (human-readable)
+  validator: "{% if not project_name.strip() %}required{% endif %}"
+
+project_slug:
+  type: str
+  help: Package / directory slug
+  default: "{{ project_name | lower | replace(' ', '-') | replace('_', '-') }}"
+  validator: "{% if not (project_slug | regex_search('^[a-z0-9][a-z0-9-]*$')) %}lowercase letters, digits and hyphens{% endif %}"
+
+description:
+  type: str
+  help: One sentence — what the project is and for whom
+  default: "TODO: one sentence on what this project is and for whom."
+
+owner:
+  type: str
+  help: GitHub handle of the human owner (CODEOWNERS of the human-owned paths)
+  default: "your-github-handle"
+
+profile:
+  type: str
+  help: Stack profile (the harness core is language-agnostic)
+  choices:
+    TypeScript / Node (pnpm, strict tsc, Vitest, oxlint, Prettier, dependency-cruiser): typescript
+    None — harness only, bring your own stack: none
+  default: typescript
+
+harnesses:
+  type: str
+  help: Coding-agent harnesses to configure (AGENTS.md and .agents/skills work everywhere; this adds adapters)
+  multiselect: true
+  choices:
+    Claude Code: claude-code
+    Codex: codex
+    DeepSeek Harness: deepseek-harness
+    Cursor: cursor
+    GitHub Copilot: copilot
+    Gemini CLI: gemini-cli
+  default: [claude-code, codex, deepseek-harness]
+
+requirement_prefix:
+  type: str
+  help: Prefix of requirement ids (REQ → REQ-01)
+  default: REQ
+  validator: "{% if not (requirement_prefix | regex_search('^[A-Z]{1,6}$')) %}1 to 6 capital letters{% endif %}"
+
+plan_prefix:
+  type: str
+  help: Prefix of milestone ids (M → lines M1.1, M1.2…)
+  default: M
+  validator: "{% if not (plan_prefix | regex_search('^[A-Z]{1,3}$')) %}1 to 3 capital letters{% endif %}"
+
+_exclude:
+  - copier.yml
+  - "{% if not ('claude-code' in harnesses or 'deepseek-harness' in harnesses or 'cursor' in harnesses) %}.claude{% endif %}"
+  - "{% if 'claude-code' not in harnesses %}.claude/agents{% endif %}"
+  - "{% if 'claude-code' not in harnesses %}.claude/skills{% endif %}"
+  - "{% if 'claude-code' not in harnesses %}CLAUDE.md{% endif %}"
+  - "{% if 'codex' not in harnesses %}.codex{% endif %}"
+  - "{% if 'gemini-cli' not in harnesses %}.gemini{% endif %}"
+  - "{% if profile != 'typescript' %}src{% endif %}"
+  - "{% if profile != 'typescript' %}package.json*{% endif %}"
+  - "{% if profile != 'typescript' %}tsconfig*.json{% endif %}"
+  - "{% if profile != 'typescript' %}vitest.config.ts{% endif %}"
+  - "{% if profile != 'typescript' %}.nvmrc{% endif %}"
+  - "{% if profile != 'typescript' %}.npmrc{% endif %}"
+  - "{% if profile != 'typescript' %}.oxlintrc.json{% endif %}"
+  - "{% if profile != 'typescript' %}.prettier*{% endif %}"
+  - "{% if profile != 'typescript' %}.dependency-cruiser.cjs{% endif %}"
+  - "{% if profile != 'typescript' %}pnpm-workspace.yaml{% endif %}"
+
+_message_after_copy: |
+  Project "{{ project_name }}" generated in {{ _copier_conf.dst_path }}.
+
+  Commit 0 (docs/harness/README.md):
+    cd {{ _copier_conf.dst_path }}
+    node scripts/harness/install.mjs{% if profile == 'typescript' %}
+    pnpm install{% endif %}
+    node scripts/harness/verify.mjs
+    git add -A && HARNESS_HUMAN=1 git commit -m "chore: add the agent harness"
+
+  Then write docs/specs and docs/requirements.md, and adopt a plan (checkpoint A).
