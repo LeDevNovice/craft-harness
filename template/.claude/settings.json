@@ -1,0 +1,23 @@
+{
+  "$comment": "Claude Code hook format, also consumed by Cursor (third-party import) and DeepSeek Harness (hooks-claude-code bridge). Git hooks and CI stay the authority for every harness.",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/harness/status.mjs\" --no-check"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit|Bash",
+        "hooks": [
+          { "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/scripts/harness/agent-hook.mjs\"" }
+        ]
+      }
+    ]
+  }
+}
