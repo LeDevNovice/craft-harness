@@ -1,0 +1,4 @@
+#!/bin/sh
+# The full definition of done before anything leaves the machine.
+set -e
+node scripts/harness/verify.mjs --ci

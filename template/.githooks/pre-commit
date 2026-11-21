@@ -1,0 +1,9 @@
+#!/bin/sh
+# Deterministic gates, the same for every harness and every human. Never bypass with --no-verify.
+set -e
+node scripts/harness/guard.mjs
+node scripts/harness/plan-check.mjs --staged
+node scripts/harness/requirements-check.mjs
+# Fast project gates (format, lint, secrets…) when harness.config.json → commands.precommit is set.
+precommit="$(node -e "process.stdout.write(require('./harness.config.json').commands?.precommit ?? '')")"
+if [ -n "$precommit" ]; then sh -c "$precommit"; fi

@@ -1,0 +1,103 @@
+{
+  "plan": "docs/plan/plan.json",
+  "progressDir": "docs/plan/progress",
+  "planIdPattern": "{{ plan_prefix }}\\d+\\.\\d+",
+  "commitTypes": ["feat", "fix", "refactor", "test", "docs", "chore", "build", "ci", "perf", "revert"],
+  "requirements": {
+    "file": "docs/requirements.md",
+    "idPattern": "{{ requirement_prefix }}-\\d{2,}"
+  },
+  "tests": {
+{%- if profile == 'typescript' %}
+    "dirs": ["src", "tests", "e2e"],
+    "filePattern": "\\.(test|spec)\\.[cm]?[jt]sx?$",
+    "titlePattern": "\\b(?:describe|it|test)(?:\\.each\\([^)]*\\))?\\(\\s*([\"'`])(.*?)\\1",
+    "skipPatterns": [
+      "\\b(describe|it|test)\\.(only|skip|todo)\\b",
+      "\\b(xit|xdescribe|xtest|fit|fdescribe)\\(",
+      "\\.fails\\("
+    ]
+{%- else %}
+    "dirs": ["."],
+    "filePattern": "(\\.(test|spec)\\.[cm]?[jt]sx?$)|((^|/)test_[^/]*\\.py$)|(_test\\.(py|go)$)|((^|/)[A-Za-z0-9]+Tests?\\.(java|kt|cs)$)",
+    "titlePattern": null,
+    "skipPatterns": [
+      "\\b(describe|it|test)\\.(only|skip|todo)\\b",
+      "\\b(xit|xdescribe|xtest|fit|fdescribe)\\(",
+      "@pytest\\.mark\\.(skip|xfail)",
+      "pytest\\.skip\\(",
+      "@unittest\\.skip",
+      "\\bt\\.Skip(Now|f)?\\(",
+      "@(Disabled|Ignore)\\b"
+    ]
+{%- endif %}
+  },
+  "ownedPaths": [
+    "AGENTS.md",
+    "**/AGENTS.md",
+    "CLAUDE.md",
+    "harness.config.json",
+    ".agents/**",
+    ".claude/**",
+    ".codex/**",
+    ".cursor/**",
+    ".gemini/**",
+    ".githooks/**",
+    ".github/**",
+    "scripts/harness/**",
+    "docs/specs/**",
+    "docs/requirements.md",
+    "docs/adr/**",
+    "docs/harness/**"{% if profile == 'typescript' %},
+    "tsconfig.base.json"{% endif %}
+  ],
+  "thresholds": {
+    "files": [
+{%- if profile == 'typescript' %}
+      "tsconfig*.json",
+      "**/tsconfig*.json",
+      ".oxlintrc.json",
+      "vitest.config.*",
+      ".dependency-cruiser.cjs",
+      "stryker.config.*",
+      "package.json"
+{%- else %}
+      "pyproject.toml",
+      "setup.cfg",
+      ".golangci.y*ml",
+      "*.config.*"
+{%- endif %}
+    ],
+    "keywords": [
+      "strict",
+      "threshold",
+      "break",
+      "budget",
+      "maxSize",
+      "numRuns",
+      "noUnchecked",
+      "exactOptional",
+      "noImplicit",
+      "verbatimModuleSyntax",
+      "forbidden",
+      "severity",
+      "\"error\"",
+      "fail_under",
+      "coverage"
+    ]
+  },
+  "commands": {
+{%- if profile == 'typescript' %}
+    "check": "pnpm -s check",
+    "precommit": "pnpm -s precommit"
+{%- else %}
+    "check": null,
+    "precommit": null
+{%- endif %}
+  },
+  "forbiddenCommands": [],
+  "lanes": {
+    "root": "../{repo}-lanes",
+    "branchPrefix": "lane/"
+  }
+}
