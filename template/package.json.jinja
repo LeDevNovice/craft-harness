@@ -1,0 +1,30 @@
+{
+  "name": "{{ project_slug }}",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.18.0",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "prepare": "node scripts/harness/install.mjs",
+    "lint": "oxlint",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check",
+    "typecheck": "tsc --noEmit",
+    "depcruise": "depcruise src --config .dependency-cruiser.cjs",
+    "test": "vitest run",
+    "precommit": "prettier . --check && oxlint",
+    "check": "tsc --noEmit && oxlint && prettier . --check && depcruise src --config .dependency-cruiser.cjs && vitest run"
+  },
+  "devDependencies": {
+    "@swc/core": "1.16.22",
+    "@types/node": "26.6.6",
+    "dependency-cruiser": "18.8.0",
+    "oxlint": "1.94.0",
+    "prettier": "3.10.1",
+    "typescript": "7.0.2",
+    "vitest": "5.1.1"
+  }
+}

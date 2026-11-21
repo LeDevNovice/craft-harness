@@ -1,0 +1,3 @@
+# pnpm settings. @swc/core ships prebuilt binaries: its install script is not needed.
+allowBuilds:
+  "@swc/core": false
