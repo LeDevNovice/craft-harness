@@ -60,12 +60,15 @@ milestone-wide fresh review; only `HARNESS_HUMAN_GATE=<gate>` can mark the line 
 | `requirements-check.mjs` | pre-commit, `verify`, CI | a requirement cited by a finished line that is undefined or named by no test (owned files never count as coverage) |
 | `commit-msg.mjs` | commit-msg | non-Conventional headers; missing `Plan:` trailer; a completing commit whose header differs from the plan; two lines completed at once; `feat`/`chore` commits that reference a line without completing it; `<id>a` trailers on anything but a non-completing `refactor:` |
 | `agent-hook.mjs` | adapters (pre-tool-use) | edits and shell writes to owned paths; `--no-verify`, force push, history rewrites, `branch -D`, `clean -f`, hooks-path changes, `HARNESS_*` variables, project-specific forbidden commands |
-| `verify.mjs` | before every commit (agent), pre-push and CI (`--ci`) | any of the above plus the project check; with `--ci`, the harness self-tests too |
+| `verify.mjs` | before every commit (agent), pre-push and CI (`--ci`) | the plan (without the comparison with HEAD), the requirements, the staged guard and the project check; with `--ci`, the harness self-tests instead of the guard |
 
 Human variables: `HARNESS_HUMAN=1` (owned files, trailer-less commits), `HARNESS_PLAN_EDIT=1`
 (plan structure), `HARNESS_HUMAN_GATE=<gate>` (close a checkpoint), `HARNESS_ALLOW_TEST_CHANGE=1`
-(test or threshold change). They are an honour system locally; CODEOWNERS makes them real on a
-shared repository.
+(test or threshold change). They are an honour system locally, and `git commit --no-verify` skips
+every local hook: the agent hook refuses it, as best a pattern match can. CI re-runs the plan and
+requirements checks, the project check and the self-tests, but not the per-commit rules (guard,
+`commit-msg`, plan changes against HEAD). On a shared repository, CODEOWNERS makes owned files and
+`plan.json` need the owner's review; require a review on every pull request for the rest.
 
 ## `harness.config.json` reference
 

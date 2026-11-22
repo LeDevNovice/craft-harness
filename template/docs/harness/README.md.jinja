@@ -30,8 +30,9 @@ HARNESS_HUMAN=1 git commit -m "chore: add the agent harness" -m "From the craft-
 ```
 
 `HARNESS_*` variables are yours alone. The agent hook refuses commands that set them and `AGENTS.md`
-forbids them; on a shared repository, branch protection plus `.github/CODEOWNERS` make the rule hold
-for everyone.
+forbids them; on a shared repository, branch protection plus `.github/CODEOWNERS` make owned files
+and the plan need your review. CI does not replay the per-commit rules (tests, thresholds, commit
+messages), so require a review on every pull request too.
 
 ## Then
 

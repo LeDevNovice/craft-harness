@@ -12,7 +12,10 @@ exfiltration or a malicious commit. The harness reduces the blast radius; it doe
 - **Owned files**: instructions, skills, hooks, harness scripts, CI and specs cannot be changed by
   the agent (agent hook before the edit, pre-commit guard after). An injected instruction cannot
   quietly rewrite the rules or weaken a gate.
-- **Gates no prompt can talk past**: git hooks and CI do not read prompts.
+- **Gates no prompt can talk past**: git hooks and CI do not read prompts. Locally, an agent can
+  still skip the git hooks (`--no-verify`); the agent hook refuses it, as best a pattern match can.
+  CI re-runs the plan, requirements and project checks, not the per-commit rules (guard on tests
+  and thresholds, commit message, plan changes against HEAD): your review covers those.
 - **Small, reviewed commits**: every behaviour change is reviewed by a context that did not see the
   untrusted content the implementer read.
 - **No secrets in reach**: secrets live in your secret manager or untracked env files; accounts,
@@ -25,7 +28,8 @@ exfiltration or a malicious commit. The harness reduces the blast radius; it doe
   mode; turn it on.
 - **Least privilege for credentials**: the agent's environment gets no production credentials and,
   if it pushes at all, a token scoped to this repository without admin rights.
-- **Protect `main`**: require CI and CODEOWNERS review (`.github/CODEOWNERS` lists the owned paths).
+- **Protect `main`**: require CI and a review on every pull request, and CODEOWNERS review
+  (`.github/CODEOWNERS` lists the owned paths and the plan).
 - **Vet third-party skills, plugins and MCP servers** like dependencies: read them before adding
   them; they are prompts with execution rights.
 - **Review context files of cloned repositories** before running an agent in them.

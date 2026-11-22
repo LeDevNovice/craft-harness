@@ -7,7 +7,11 @@
 import { HUMAN_VARIABLES, config, matchesAny, repoPath, repoRoot } from "./lib.mjs";
 
 const BUILT_IN_FORBIDDEN = [
-  [/--no-verify\b|\bgit\s+commit\b[^|;&]*\s-n\b/, "bypassing git hooks"],
+  // git accepts any unambiguous prefix of a long option (--no-ver) and clustered short flags (-nm).
+  [
+    /--no-v(?:e(?:r(?:i(?:fy?)?)?)?)?\b|\bgit\s+commit\b[^|;&]*\s-[a-zA-Z]*n[a-zA-Z]*\b/,
+    "bypassing git hooks",
+  ],
   [/\bgit\s+push\b[^|;&]*\s(--force\b|--force-with-lease\b|-f\b)/, "force push"],
   [/\bgit\s+(reset\s+--hard|rebase\b|filter-branch|filter-repo|commit\b[^|;&]*--amend)/, "rewriting history"],
   [/\bgit\s+branch\b[^|;&]*\s-D\b/, "force-deleting a branch"],
