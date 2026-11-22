@@ -2,6 +2,11 @@
 
 Versions are git tags; `copier update` moves a project between them.
 
+## Unreleased
+
+- Fix: `plan-check` refuses a line newly marked `provided` without `HARNESS_PLAN_EDIT=1`. An agent
+  could otherwise skip a line, its requirement test and a human checkpoint (#4).
+
 ## v0.1.0 — 2026-11-21
 
 First release, extracted from the Deux Places agent kit and generalized (see `docs/lineage.md`).

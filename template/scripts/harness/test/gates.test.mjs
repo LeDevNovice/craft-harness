@@ -96,6 +96,18 @@ describe("plan-check", () => {
     assert.equal(accepted.code, 0, accepted.out);
   });
 
+  it("lets only the human mark a line provided", () => {
+    repo = makeRepo({
+      plan: planOf(line("M1.1", { humanGate: "A", message: "docs: checkpoint A" }), line("M1.2")),
+    });
+    repo.setStatus("M1.1", "provided");
+    const refused = repo.commit("docs: checkpoint A\n\nPlan: M1.1");
+    assert.notEqual(refused.code, 0);
+    assert.match(refused.out, /M1\.1 marked "provided"/);
+    const accepted = repo.commit("docs: checkpoint A\n\nPlan: M1.1", { HARNESS_PLAN_EDIT: "1" });
+    assert.equal(accepted.code, 0, accepted.out);
+  });
+
   it("allows lines in progress together only with disjoint touches", () => {
     const independent = (id, touches) => line(id, { dependsOn: ["M1.1"], touches });
     repo = makeRepo({
