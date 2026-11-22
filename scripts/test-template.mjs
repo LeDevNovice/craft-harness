@@ -72,6 +72,26 @@ function runVariant({ data }, dir) {
   must("git", ["add", "-A"], dir);
   expectRefused(sh("git", ["commit", "-q", "-m", `docs: tweak\n\nPlan: ${plan}1.1`]), "human-owned file");
   must("git", ["checkout", "HEAD", "--", "docs/specs/product.md"], dir);
+  if (ts) {
+    // The files that define "green" are human-owned, and the gate does not run an agent-editable script.
+    const weakenings = [
+      ["tsconfig.json", '"noEmit": true,', '"noEmit": true,\n    "strict": false,'],
+      ["vitest.config.ts", 'include: ["src/**/*.test.ts"],', 'include: ["src/**/*.test.ts"],\n    exclude: ["src/smoke.test.ts"],'],
+    ];
+    for (const [file, from, to] of weakenings) {
+      writeFileSync(join(dir, file), readFileSync(join(dir, file), "utf8").replace(from, to));
+      must("git", ["add", "-A"], dir);
+      expectRefused(sh("git", ["commit", "-q", "-m", `fix: relax\n\nPlan: ${plan}1.1`]), `${file}: human-owned file`);
+      must("git", ["reset", "-q", "--hard"], dir);
+    }
+    const pkg = JSON.parse(readFileSync(join(dir, "package.json"), "utf8"));
+    pkg.scripts.check = "true";
+    writeFileSync(join(dir, "package.json"), `${JSON.stringify(pkg, null, 2)}\n`);
+    writeFileSync(join(dir, "src/broken.ts"), 'export const broken: number = "not a number";\n');
+    expectRefused(sh("node", ["scripts/harness/verify.mjs"]), "✖ project check");
+    must("git", ["reset", "-q", "--hard"], dir);
+    rmSync(join(dir, "src/broken.ts"));
+  }
   const hook = sh("node", ["scripts/harness/agent-hook.mjs"], {}, JSON.stringify({ tool_name: "Bash", tool_input: { command: "git commit --no-verify -m x" } }));
   if (hook.code !== 2) throw new Error("agent hook did not refuse --no-verify");
 

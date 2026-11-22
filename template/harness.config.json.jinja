@@ -49,7 +49,11 @@
     "docs/requirements.md",
     "docs/adr/**",
     "docs/harness/**"{% if profile == 'typescript' %},
-    "tsconfig.base.json"{% endif %}
+    "tsconfig.base.json",
+    "tsconfig.json",
+    "vitest.config.*",
+    ".oxlintrc.json",
+    ".dependency-cruiser.cjs"{% endif %}
   ],
   "thresholds": {
     "files": [
@@ -88,8 +92,8 @@
   },
   "commands": {
 {%- if profile == 'typescript' %}
-    "check": "pnpm -s check",
-    "precommit": "pnpm -s precommit"
+    "check": "pnpm -s exec tsc --noEmit && pnpm -s exec oxlint && pnpm -s exec prettier . --check && pnpm -s exec depcruise src --config .dependency-cruiser.cjs && pnpm -s exec vitest run",
+    "precommit": "pnpm -s exec prettier . --check && pnpm -s exec oxlint"
 {%- else %}
     "check": null,
     "precommit": null
