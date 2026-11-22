@@ -17,3 +17,10 @@
 /docs/adr/                @{{ owner }}
 /docs/harness/            @{{ owner }}
 /docs/plan/plan.json      @{{ owner }}
+{%- if profile == 'typescript' %}
+/tsconfig.base.json       @{{ owner }}
+/tsconfig.json            @{{ owner }}
+/vitest.config.*          @{{ owner }}
+/.oxlintrc.json           @{{ owner }}
+/.dependency-cruiser.cjs  @{{ owner }}
+{%- endif %}

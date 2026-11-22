@@ -43,8 +43,10 @@ rules, test levels, proof expected for that area. The nearest file wins. Keep ea
 
 ## Profiles
 
-A profile is data plus a few files: the config values above, the tool configs, a `check` command,
-one smoke test so the project is green at commit 0, and a nested `AGENTS.md`. To add one to the
+A profile is data plus a few files: the config values above, the tool configs (listed in
+`ownedPaths`: they define what green means), a `check` command written out in `commands.check`
+rather than delegated to a package script the agent can edit, one smoke test so the project is green
+at commit 0, and a nested `AGENTS.md`. To add one to the
 template: add a choice to `profile` in `copier.yml`, its files under `template/` with `_exclude`
 conditions, its branch in `harness.config.json.jinja`, and a variant to `scripts/test-template.mjs`.
 

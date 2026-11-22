@@ -10,6 +10,10 @@ Versions are git tags; `copier update` moves a project between them.
   edits to such owned files and skipped tests in such test files went unnoticed (#6).
 - Fix: the agent hook refuses abbreviated `--no-verify` (`--no-ver`) and clustered short flags
   (`git commit -nm`). The docs now say what CI re-checks and what it does not (#5).
+- Fix (TypeScript profile): `tsconfig.json`, `vitest.config.*`, `.oxlintrc.json` and
+  `.dependency-cruiser.cjs` are human-owned, and `commands.check`/`precommit` hold the literal
+  commands instead of `pnpm -s check`. An agent could otherwise relax strictness, exclude a test or
+  empty the `check` script, and every gate stayed green (#1).
 
 ## v0.1.0 — 2026-11-21
 
