@@ -6,6 +6,8 @@ Versions are git tags; `copier update` moves a project between them.
 
 - Fix: `plan-check` refuses a line newly marked `provided` without `HARNESS_PLAN_EDIT=1`. An agent
   could otherwise skip a line, its requirement test and a human checkpoint (#4).
+- Fix: the pre-commit guard tracks paths with non-ASCII characters or spaces. Git quoted them, so
+  edits to such owned files and skipped tests in such test files went unnoticed (#6).
 
 ## v0.1.0 — 2026-11-21
 
