@@ -190,6 +190,27 @@ describe("guard", () => {
     assert.equal(repo.commit("test: rename\n\nPlan: M1.1", { HARNESS_ALLOW_TEST_CHANGE: "1" }).code, 0);
   });
 
+  it("tracks paths with non-ASCII characters or spaces", () => {
+    repo = makeRepo();
+    repo.write("docs/specs/décision.md", "# Décision\n");
+    repo.write("src/café.test.ts", 'it("café", () => {});\n');
+    repo.write("src/my rule.test.ts", 'it("my rule", () => {});\n');
+    assert.equal(repo.commit("docs: add files", { HARNESS_HUMAN: "1" }).code, 0);
+
+    repo.write("docs/specs/décision.md", "# Décision, edited\n");
+    const owned = repo.commit("docs: tweak\n\nPlan: M1.1");
+    assert.notEqual(owned.code, 0);
+    assert.match(owned.out, /docs\/specs\/décision\.md: human-owned file/);
+    repo.git("reset", "-q", "--hard");
+
+    repo.write("src/café.test.ts", 'it.skip("café", () => {});\n');
+    repo.write("src/my rule.test.ts", 'it.skip("my rule", () => {});\n');
+    const skipped = repo.commit("test: skip\n\nPlan: M1.1");
+    assert.notEqual(skipped.code, 0);
+    assert.match(skipped.out, /src\/café\.test\.ts: focused or skipped test/);
+    assert.match(skipped.out, /src\/my rule\.test\.ts: focused or skipped test/);
+  });
+
   it("refuses weakening a quality threshold", () => {
     repo = makeRepo();
     repo.write("tsconfig.json", '{\n  "strict": true\n}\n');

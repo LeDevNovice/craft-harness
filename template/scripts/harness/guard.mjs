@@ -18,7 +18,9 @@ const thresholdKeywords = thresholds.keywords.length ? new RegExp(thresholds.key
 const ownedProblems = [];
 const testProblems = [];
 
-const status = git(["diff", "--cached", "--name-status", "--no-renames"]);
+// Unquoted paths: git would otherwise quote non-ASCII paths, which then match no glob.
+const diffArgs = ["-c", "core.quotePath=false", "diff", "--cached", "--no-renames"];
+const status = git([...diffArgs, "--name-status"]);
 for (const row of status ? status.split("\n") : []) {
   const [kind, path] = row.split("\t");
   if (matchesAny(path, ownedPaths))
@@ -27,13 +29,14 @@ for (const row of status ? status.split("\n") : []) {
     testProblems.push(`${path}: deleting a test file`);
 }
 
-const diff = git(["diff", "--cached", "--unified=0", "--no-color", "--no-ext-diff", "--no-renames"]) ?? "";
+const diff = git([...diffArgs, "--unified=0", "--no-color", "--no-ext-diff"]) ?? "";
 let current = "";
 const removedIds = new Map();
 const addedIds = new Map();
 for (const row of diff.split("\n")) {
-  if (row.startsWith("+++ ")) current = row.startsWith("+++ b/") ? row.slice(6) : current;
-  if (row.startsWith("--- ") && row.slice(4).startsWith("a/")) current = row.slice(6);
+  // Headers end with a TAB when the path contains a space.
+  if (row.startsWith("+++ ")) current = row.startsWith("+++ b/") ? row.slice(6).replace(/\t$/, "") : current;
+  if (row.startsWith("--- ") && row.slice(4).startsWith("a/")) current = row.slice(6).replace(/\t$/, "");
   if (row.startsWith("+++") || row.startsWith("---")) continue;
   const added = row.startsWith("+");
   const removed = row.startsWith("-");

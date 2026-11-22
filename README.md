@@ -40,7 +40,7 @@ harness.config.json        every rule the gates apply (owned paths, id patterns,
 .claude/  .codex/  .gemini/  harness adapters: session-start status, pre-tool-use refusals, reviewer subagent
 .githooks/                 pre-commit · commit-msg · pre-push → scripts/harness
 scripts/harness/           status · verify · plan-check · requirements-check · guard · commit-msg ·
-                           agent-hook · lanes · review-prompt · install  (Node ≥ 22, no dependencies, 34 self-tests)
+                           agent-hook · lanes · review-prompt · install  (Node ≥ 22, no dependencies, 35 self-tests)
 docs/specs/                product · technical (ranked quality attributes) · design      (human-owned)
 docs/requirements.md       numbered, testable rules, each traced to a test               (human-owned)
 docs/adr/                  short MADR decisions                                           (human-owned)
