@@ -47,7 +47,7 @@ This page records what was kept, what was generalized, what changed and what was
 | Harness self-tests shipped and run by `verify --ci` | A project can change its config or update the template and still prove its gates work |
 | `docs/harness/assumptions.md` + skill `audit-harness` | Components expire as models improve; remove them on evidence |
 | `plan-from-spec` skill writing proposals | The plan is human-owned; the agent drafts, the human adopts |
-| CODEOWNERS on owned paths | Local human variables are an honour system; the server makes the rule hold |
+| CODEOWNERS on owned paths | Local human variables are an honour system; the server makes ownership hold |
 | Copier instead of copying a kit into an empty repo | Projects receive later improvements with `copier update` |
 
 ## Left out

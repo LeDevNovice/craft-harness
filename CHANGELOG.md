@@ -8,6 +8,8 @@ Versions are git tags; `copier update` moves a project between them.
   could otherwise skip a line, its requirement test and a human checkpoint (#4).
 - Fix: the pre-commit guard tracks paths with non-ASCII characters or spaces. Git quoted them, so
   edits to such owned files and skipped tests in such test files went unnoticed (#6).
+- Fix: the agent hook refuses abbreviated `--no-verify` (`--no-ver`) and clustered short flags
+  (`git commit -nm`). The docs now say what CI re-checks and what it does not (#5).
 
 ## v0.1.0 — 2026-11-21
 

@@ -34,6 +34,12 @@ describe("agent hook — Claude Code payloads", () => {
     for (const command of [
       "git commit --no-verify -m x",
       "git commit -n -m x",
+      "git commit --no-ver -m x",
+      "git commit --no-verif -m x",
+      "git commit -nm x",
+      "git commit -an -m x",
+      "git merge --no-verify lane/M1.2",
+      "git push --no-verify origin main",
       "git push --force origin main",
       "git reset --hard HEAD~1",
       "git commit --amend",
@@ -56,6 +62,9 @@ describe("agent hook — Claude Code payloads", () => {
     assert.equal(bash("cat docs/specs/product.md | head -5").code, 0);
     assert.equal(bash("cp docs/specs/product.md /tmp/copy.md").code, 0);
     assert.equal(bash("git commit -m 'feat: x'").code, 0);
+    assert.equal(bash("git commit -am 'fix: x'").code, 0);
+    assert.equal(bash("git commit --no-edit").code, 0);
+    assert.equal(bash("git merge --no-ff --no-commit lane/M1.2").code, 0);
   });
 });
 
