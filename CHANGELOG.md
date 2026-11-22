@@ -14,6 +14,9 @@ Versions are git tags; `copier update` moves a project between them.
   `.dependency-cruiser.cjs` are human-owned, and `commands.check`/`precommit` hold the literal
   commands instead of `pnpm -s check`. An agent could otherwise relax strictness, exclude a test or
   empty the `check` script, and every gate stayed green (#1).
+- Change: DeepSeek Harness is supported through the standards (`AGENTS.md`, `.agents/skills`, git
+  hooks, CI) instead of a hooks adapter, and is no longer selected by default. Its bridge never
+  matched the generated `.claude/settings.json` (#2, ADR-0011).
 
 ## v0.1.0 — 2026-11-21
 

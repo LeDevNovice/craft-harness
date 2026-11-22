@@ -47,7 +47,7 @@ harnesses:
     Cursor: cursor
     GitHub Copilot: copilot
     Gemini CLI: gemini-cli
-  default: [claude-code, codex, deepseek-harness]
+  default: [claude-code, codex]
 
 requirement_prefix:
   type: str
@@ -63,7 +63,7 @@ plan_prefix:
 
 _exclude:
   - copier.yml
-  - "{% if not ('claude-code' in harnesses or 'deepseek-harness' in harnesses or 'cursor' in harnesses) %}.claude{% endif %}"
+  - "{% if not ('claude-code' in harnesses or 'cursor' in harnesses) %}.claude{% endif %}"
   - "{% if 'claude-code' not in harnesses %}.claude/agents{% endif %}"
   - "{% if 'claude-code' not in harnesses %}.claude/skills{% endif %}"
   - "{% if 'claude-code' not in harnesses %}CLAUDE.md{% endif %}"

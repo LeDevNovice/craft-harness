@@ -84,7 +84,7 @@ session-start context:
 | --- | --- | --- |
 | Claude Code | `CLAUDE.md` → `AGENTS.md`, `.claude/skills` → `.agents/skills`, reviewer subagent | `.claude/settings.json` |
 | Codex | native | `.codex/hooks.json` |
-| DeepSeek Harness | native | `.claude/settings.json` via its Claude Code hooks bridge |
+| DeepSeek Harness | native | git hooks and CI only |
 | Cursor | native | `.claude/settings.json` via third-party import |
 | GitHub Copilot | native | git hooks and CI only |
 | Gemini CLI | `.gemini/settings.json` → `AGENTS.md` | git hooks and CI only |

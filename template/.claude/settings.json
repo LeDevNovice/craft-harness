@@ -1,5 +1,5 @@
 {
-  "$comment": "Claude Code hook format, also consumed by Cursor (third-party import) and DeepSeek Harness (hooks-claude-code bridge). Git hooks and CI stay the authority for every harness.",
+  "$comment": "Claude Code hook format, also consumed by Cursor (third-party import). Git hooks and CI stay the authority for every harness.",
   "hooks": {
     "SessionStart": [
       {

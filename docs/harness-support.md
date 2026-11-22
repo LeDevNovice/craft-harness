@@ -12,14 +12,14 @@ Adapters exist only where a harness offers something the core cannot: injecting 
 session start, refusing a forbidden edit or command *before* it happens (cheaper than a refused
 commit), and a reviewer subagent. They are generated for the harnesses chosen at copy time.
 
-- **First-class by default — Claude Code, Codex, DeepSeek Harness.** Claude Code has the richest
-  hook surface and set the de-facto hook format; Codex is the origin of `AGENTS.md` and the most
-  used alternative, with a compatible hook protocol; DeepSeek Harness reads both standards natively
-  and runs Claude Code hooks through its bridge. Together they cover closed and open runtimes.
-- **Supported through the standards — Cursor, GitHub Copilot, Gemini CLI.** They read `AGENTS.md`
-  (Gemini through one setting) and skills. Cursor imports `.claude/settings.json` hooks; its CLI's
-  own hooks have open platform bugs, so no Cursor-specific file is generated. Copilot and Gemini
-  get no pre-tool-use refusals from the template: their gates are the git hooks and CI.
+- **First-class by default — Claude Code, Codex.** Claude Code has the richest hook surface and set
+  the de-facto hook format; Codex is the origin of `AGENTS.md` and the most used alternative, with a
+  compatible hook protocol.
+- **Supported through the standards — DeepSeek Harness, Cursor, GitHub Copilot, Gemini CLI.** They
+  read `AGENTS.md` (Gemini through one setting) and skills. Cursor imports `.claude/settings.json`
+  hooks; its CLI's own hooks have open platform bugs, so no Cursor-specific file is generated.
+  DeepSeek Harness, Copilot and Gemini get no pre-tool-use refusals from the template: their gates
+  are the git hooks and CI (ADR-0011 for DeepSeek Harness).
 
 ## Matrix
 
@@ -28,8 +28,8 @@ commit), and a reviewer subagent. They are generated for the harnesses chosen at
 | Instructions | `CLAUDE.md` (`@AGENTS.md`) | `AGENTS.md` | `AGENTS.md` | `AGENTS.md` | `AGENTS.md` | `AGENTS.md` via `.gemini/settings.json` |
 | Nested `AGENTS.md` | yes | yes (concatenated root → cwd) | yes | yes | yes | via settings |
 | Skills | `.claude/skills` → `.agents/skills` | `.agents/skills` | `.agents/skills` | `.agents/skills` | `.agents/skills` | `.gemini/skills` → `.agents/skills` |
-| Session-start status | `SessionStart` hook | `SessionStart` hook | via bridge | via import | — | — |
-| Pre-tool-use refusals | `PreToolUse` (Edit, Write, Bash) | `PreToolUse` (Bash, apply_patch), after `/hooks` trust | via bridge | `.claude/settings.json` import; Cursor `beforeShellExecution` payload also understood | — | — |
+| Session-start status | `SessionStart` hook | `SessionStart` hook | — | via import | — | — |
+| Pre-tool-use refusals | `PreToolUse` (Edit, Write, Bash) | `PreToolUse` (Bash, apply_patch), after `/hooks` trust | — | `.claude/settings.json` import; Cursor `beforeShellExecution` payload also understood | — | — |
 | Fresh-context reviewer | `reviewer` subagent | `review-prompt.mjs \| codex exec -` | subagent | subagent / headless | headless | headless |
 | Parallel lanes | `lanes.mjs` (or native worktrees) | `lanes.mjs` | `lanes.mjs` | `lanes.mjs` | `lanes.mjs` | `lanes.mjs` |
 | Authority | git hooks + CI | git hooks + CI | git hooks + CI | git hooks + CI | git hooks + CI | git hooks + CI |
@@ -47,8 +47,11 @@ and skills from `.agents/skills`. Project hooks load only from trusted project l
 to their hash: run `/hooks` once to trust them, and again after a template update changes them.
 
 **DeepSeek Harness.** Developer preview. Loads `AGENTS.md` from the project root down and skills
-from `.agents/skills` (also `.dsh/skills`). Its `hooks-claude-code` bridge executes
-`.claude/settings.json`, which is why that file is generated when DeepSeek Harness is selected.
+from `.agents/skills` (also `.dsh/skills`); the agent runs `status.mjs` itself at session start, as
+`AGENTS.md` asks. No adapter is generated (ADR-0011): its Claude Code hooks bridge is experimental,
+must be mounted by hand with a process-wide `configPath`, matches DeepSeek's own tool names (`bash`,
+`str_replace_editor`) and injects only JSON `additionalContext` at session start, so the Claude Code
+hook file did nothing there.
 
 **Cursor.** Reads `AGENTS.md` and project skills; imports Claude Code hooks when "Include
 Third-Party Plugins, Skills, and Other Configs" is on (the default). `agent-hook.mjs` also answers
