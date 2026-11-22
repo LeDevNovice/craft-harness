@@ -56,7 +56,7 @@ milestone-wide fresh review; only `HARNESS_HUMAN_GATE=<gate>` can mark the line 
 | Script | Runs in | Refuses |
 | --- | --- | --- |
 | `guard.mjs` | pre-commit, `verify` | staged edits to owned paths; deleted, focused or skipped tests; tests that stop naming a requirement; removed threshold lines (owned files are left to the ownership rule) |
-| `plan-check.mjs` | pre-commit (`--staged`), `verify`, CI | duplicate or malformed ids; unknown statuses; missing fields; `dependsOn` forward or unknown; work started before its dependencies are done; overlapping lines in progress; structural edits and checkpoint closings without the human variables |
+| `plan-check.mjs` | pre-commit (`--staged`), `verify`, CI | duplicate or malformed ids; unknown statuses; missing fields; `dependsOn` forward or unknown; work started before its dependencies are done; overlapping lines in progress; structural edits, checkpoint closings and lines marked `provided` without the human variables |
 | `requirements-check.mjs` | pre-commit, `verify`, CI | a requirement cited by a finished line that is undefined or named by no test (owned files never count as coverage) |
 | `commit-msg.mjs` | commit-msg | non-Conventional headers; missing `Plan:` trailer; a completing commit whose header differs from the plan; two lines completed at once; `feat`/`chore` commits that reference a line without completing it; `<id>a` trailers on anything but a non-completing `refactor:` |
 | `agent-hook.mjs` | adapters (pre-tool-use) | edits and shell writes to owned paths; `--no-verify`, force push, history rewrites, `branch -D`, `clean -f`, hooks-path changes, `HARNESS_*` variables, project-specific forbidden commands |

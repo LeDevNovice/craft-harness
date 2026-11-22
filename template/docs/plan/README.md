@@ -13,7 +13,7 @@ check it. The agent changes only `status` and `notes`; any other change is a hum
 | `message` | yes | The exact Conventional Commit header of the commit that completes the line |
 | `content` | yes | What changes, citing requirement ids and spec sections |
 | `verification` | yes | A command or an observable check that proves the line, never "it works" |
-| `status` | yes | `todo` → `in_progress` → `done`, or `blocked` (with `notes`); `provided` = delivered by the human |
+| `status` | yes | `todo` → `in_progress` → `done`, or `blocked` (with `notes`); `provided` = delivered by the human (only with `HARNESS_PLAN_EDIT=1`) |
 | `notes` | no | Why a line is blocked, or a remark for the next session |
 | `humanGate` | no | Checkpoint letter: only the human marks this line done (`HARNESS_HUMAN_GATE=<letter>`) |
 | `dependsOn` | no | Line ids that must be done first. Without it, a line depends on the previous one |

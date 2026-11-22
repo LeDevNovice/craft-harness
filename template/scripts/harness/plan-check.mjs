@@ -9,6 +9,7 @@
 //   4. Parallel work: several lines in progress at once need explicit, pairwise disjoint `touches`.
 //   5. Against HEAD, only `status` and `notes` may change (structural edits: HARNESS_PLAN_EDIT=1, human only).
 //   6. A line carrying `humanGate` becomes done only with HARNESS_HUMAN_GATE=<gate> (human only).
+//   7. A line becomes `provided` (delivered outside the loop) only with HARNESS_PLAN_EDIT=1 (human only).
 import {
   DONE,
   STARTED,
@@ -76,7 +77,7 @@ if (staged) problems.push(...changesSinceHead(readPlanAt("HEAD")));
 if (problems.length) fail("plan check failed", problems);
 console.log(`✔ plan ok — ${all.filter((l) => DONE.has(l.status)).length}/${all.length} lines done`);
 
-/** Rules 5 and 6: what the staged plan may change compared with HEAD (nothing to compare on the first commit). */
+/** Rules 5, 6 and 7: what the staged plan may change compared with HEAD (nothing to compare on the first commit). */
 function changesSinceHead(head) {
   if (!head) return [];
   const found = [];
@@ -88,6 +89,11 @@ function changesSinceHead(head) {
   }
   for (const line of all) {
     const previous = before.get(line.id);
+    if (line.status === "provided" && previous && previous.status !== "provided" && !human.planEdit()) {
+      found.push(
+        `${line.id} marked "provided": only the human declares work delivered outside the loop (HARNESS_PLAN_EDIT=1)`,
+      );
+    }
     if (
       line.humanGate &&
       line.status === "done" &&
