@@ -47,6 +47,11 @@ function runVariant({ data }, dir) {
   const claudeHooks = harnesses.includes("claude-code") || harnesses.includes("cursor");
   if (existsSync(join(dir, ".claude/settings.json")) !== claudeHooks)
     throw new Error(`.claude/settings.json should ${claudeHooks ? "" : "not "}be generated for ${harnesses.join(", ")}`);
+  const setupSteps = join(dir, ".github/workflows/copilot-setup-steps.yml");
+  if (existsSync(setupSteps) !== harnesses.includes("copilot"))
+    throw new Error(`copilot-setup-steps.yml should ${harnesses.includes("copilot") ? "" : "not "}be generated for ${harnesses.join(", ")}`);
+  if (existsSync(setupSteps) && !/^  copilot-setup-steps:$/m.test(readFileSync(setupSteps, "utf8")))
+    throw new Error("copilot-setup-steps.yml must define the copilot-setup-steps job");
   const sh = (cmd, cmdArgs, extra = {}, input) => run(cmd, cmdArgs, dir, extra, input);
 
   must("node", ["scripts/harness/install.mjs"], dir);

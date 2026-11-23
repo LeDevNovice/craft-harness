@@ -1,0 +1,42 @@
+# Copilot cloud agent: prepares its sandbox before it starts working (GitHub's copilot-setup-steps
+# workflow; only used from the default branch). It activates the same git hooks as on your machine,
+# so pre-commit, commit-msg and pre-push gates also run for the cloud agent. Human-owned (.github/).
+name: Copilot Setup Steps
+
+# Runs as a normal workflow when it changes, and by hand from the Actions tab, to validate it.
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+  pull_request:
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
+
+jobs:
+  # The job must be called copilot-setup-steps or Copilot ignores it.
+  copilot-setup-steps:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+{%- if profile == 'typescript' %}
+          node-version-file: .nvmrc
+
+      - name: Install pnpm and dependencies
+        run: |
+          npm install -g "$(node -p "require('./package.json').packageManager")"
+          pnpm install --frozen-lockfile
+{%- else %}
+          node-version: 22
+{%- endif %}
+
+      - name: Activate the harness git hooks
+        run: node scripts/harness/install.mjs
+
+      - name: Show where the work stands
+        run: node scripts/harness/status.mjs --no-check

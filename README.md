@@ -47,7 +47,8 @@ docs/adr/                  short MADR decisions                                 
 docs/plan/plan.json        milestones → lines; the agent edits status and notes only
 docs/plan/progress/        one evidence note per line
 docs/harness/              human guide · assumptions register · security
-.github/                   CI running the same gate · CODEOWNERS on owned paths · PR template
+.github/                   CI running the same gate · CODEOWNERS on owned paths · PR template ·
+                           Copilot setup steps (when Copilot is selected)
 ```
 
 Plus, with the **TypeScript profile**: pnpm, strict TypeScript 7, Vitest, oxlint, Prettier,
@@ -86,7 +87,7 @@ session-start context:
 | Codex | native | `.codex/hooks.json` |
 | DeepSeek Harness | native | git hooks and CI only |
 | Cursor | native | `.claude/settings.json` via third-party import |
-| GitHub Copilot | native | CLI: `.claude/settings.json` when generated; cloud agent: git hooks and CI |
+| GitHub Copilot | native | CLI: `.claude/settings.json` when generated; cloud agent: git hooks (activated by `copilot-setup-steps.yml`) and CI |
 | Gemini CLI | `.gemini/settings.json` → `AGENTS.md` | `.gemini/settings.json` |
 
 Why these, and what each one guarantees: [docs/harness-support.md](docs/harness-support.md).

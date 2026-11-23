@@ -18,7 +18,7 @@ scripts/          test-template.mjs: generates every variant and runs its gates 
 | Sources of truth | read when a line cites them | `docs/specs/`, `docs/requirements.md`, `docs/adr/`, `CONTEXT.md` | human (`CONTEXT.md`: agent may add terms) |
 | State | read at every session start | `docs/plan/plan.json`, `docs/plan/progress/`, git history | agent (status, notes, progress) and human (structure) |
 | Gates | deterministic, authoritative | `.githooks/`, `scripts/harness/`, CI | human |
-| Adapters | deterministic, best effort, earlier | `.claude/settings.json`, `.codex/hooks.json`, `.gemini/settings.json` | human |
+| Adapters | deterministic, best effort, earlier | `.claude/settings.json`, `.codex/hooks.json`, `.gemini/settings.json`, `.github/workflows/copilot-setup-steps.yml` | human |
 | Configuration | data for the gates | `harness.config.json` | human |
 
 "Human-owned" is enforced three times: the agent hook refuses the edit, the pre-commit guard

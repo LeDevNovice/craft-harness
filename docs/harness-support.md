@@ -21,8 +21,10 @@ commit), and a reviewer subagent. They are generated for the harnesses chosen at
   `AGENTS.md` and skills. Cursor imports `.claude/settings.json`
   hooks; its CLI's own hooks have open platform bugs, so no Cursor-specific file is generated.
   Copilot CLI also runs `.claude/settings.json` when it is generated (Claude Code or Cursor
-  selected). DeepSeek Harness and the Copilot cloud agent get no pre-tool-use refusals from the
-  template: their gates are the git hooks and CI (ADR-0011 for DeepSeek Harness).
+  selected), and the Copilot cloud agent gets `.github/workflows/copilot-setup-steps.yml`, which
+  activates the git hooks in its sandbox (ADR-0013). DeepSeek Harness and the Copilot cloud agent
+  get no pre-tool-use refusals from the template: their gates are the git hooks and CI (ADR-0011
+  for DeepSeek Harness).
 
 ## Matrix
 
@@ -32,7 +34,7 @@ commit), and a reviewer subagent. They are generated for the harnesses chosen at
 | Nested `AGENTS.md` | yes | yes (concatenated root → cwd) | yes | yes | yes | via settings |
 | Skills | `.claude/skills` → `.agents/skills` | `.agents/skills` | `.agents/skills` | `.agents/skills` | `.agents/skills` | `.agents/skills` (native alias) |
 | Session-start status | `SessionStart` hook | `SessionStart` hook | — | via import | CLI: `.claude/settings.json` when generated | — |
-| Pre-tool-use refusals | `PreToolUse` (Edit, Write, Bash) | `PreToolUse` (Bash, apply_patch), after `/hooks` trust | — | `.claude/settings.json` import; Cursor `beforeShellExecution` payload also understood | CLI: `.claude/settings.json` when generated; cloud agent: — | `BeforeTool` (write_file, replace, run_shell_command), after trusting the project hooks |
+| Pre-tool-use refusals | `PreToolUse` (Edit, Write, Bash) | `PreToolUse` (Bash, apply_patch), after `/hooks` trust | — | `.claude/settings.json` import; Cursor `beforeShellExecution` payload also understood | CLI: `.claude/settings.json` when generated; cloud agent: — (git hooks active through setup steps) | `BeforeTool` (write_file, replace, run_shell_command), after trusting the project hooks |
 | Fresh-context reviewer | `reviewer` subagent | `review-prompt.mjs \| codex exec -` | subagent | subagent / headless | headless | headless |
 | Parallel lanes | `lanes.mjs` (or native worktrees) | `lanes.mjs` | `lanes.mjs` | `lanes.mjs` | `lanes.mjs` | `lanes.mjs` |
 | Authority | git hooks + CI | git hooks + CI | git hooks + CI | git hooks + CI | git hooks + CI | git hooks + CI |
@@ -64,8 +66,11 @@ Cursor's native `beforeShellExecution` JSON protocol if you wire it yourself.
 CLI also reads the repository's `.claude/settings.json`: it reports Claude tool names (`Edit`,
 `Write`, `Bash`) to PascalCase hooks, its edit tools pass `path` (read by `agent-hook.mjs`), and it
 fails closed when a hook errors, so the hook commands fall back to the git root when
-`CLAUDE_PROJECT_DIR` is unset. The cloud agent loads only `.github/hooks/*.json`; the template ships
-none, so its gates are CI plus CODEOWNERS.
+`CLAUDE_PROJECT_DIR` is unset. The cloud agent works in a fresh clone where git hooks are not
+active by default. `.github/workflows/copilot-setup-steps.yml`, which GitHub runs before the agent
+starts once it is on the default branch, installs the dependencies and runs `install.mjs`, so the
+same pre-commit, commit-msg and pre-push gates apply there. The cloud agent also loads
+`.github/hooks/*.json`; the template ships none (ADR-0013).
 
 **Gemini CLI** reads `AGENTS.md` through `context.fileName`, and skills from `.agents/skills`, its
 generic alias for `.gemini/skills`. Project hooks are on by default since v0.26.0: the `BeforeTool`

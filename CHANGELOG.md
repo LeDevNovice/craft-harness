@@ -24,6 +24,9 @@ Versions are git tags; `copier update` moves a project between them.
 - Feature: Gemini CLI gets a `BeforeTool` hook in `.gemini/settings.json` that runs `agent-hook.mjs`
   on `write_file`, `replace` and `run_shell_command`; the redundant `.gemini/skills` link is gone, as
   Gemini reads `.agents/skills` (#3, ADR-0012).
+- Feature: with Copilot selected, `.github/workflows/copilot-setup-steps.yml` installs the
+  dependencies and activates the git hooks in the Copilot cloud agent's sandbox before it starts, so
+  the same gates apply to it (#3, ADR-0013).
 
 ## v0.1.0 — 2026-11-21
 
