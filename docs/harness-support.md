@@ -15,16 +15,14 @@ commit), and a reviewer subagent. They are generated for the harnesses chosen at
 - **First-class by default — Claude Code, Codex.** Claude Code has the richest hook surface and set
   the de-facto hook format; Codex is the origin of `AGENTS.md` and the most used alternative, with a
   compatible hook protocol.
-- **Supported through the standards — DeepSeek Harness, Cursor, GitHub Copilot, Gemini CLI.** They
-  read `AGENTS.md` (Gemini through one setting) and skills. Cursor imports `.claude/settings.json`
+- **Selectable with a hook adapter — Gemini CLI.** `.gemini/settings.json` points it at `AGENTS.md`
+  and runs `agent-hook.mjs` before file and shell tools (ADR-0012).
+- **Supported through the standards — DeepSeek Harness, Cursor, GitHub Copilot.** They read
+  `AGENTS.md` and skills. Cursor imports `.claude/settings.json`
   hooks; its CLI's own hooks have open platform bugs, so no Cursor-specific file is generated.
   Copilot CLI also runs `.claude/settings.json` when it is generated (Claude Code or Cursor
-  selected). DeepSeek Harness, Gemini CLI and the Copilot cloud agent get no pre-tool-use refusals
-  from the template: their gates are the git hooks and CI (ADR-0011 for DeepSeek Harness).
-
-Copilot (CLI and cloud agent, `.github/hooks/*.json`) and Gemini CLI (`.gemini/settings.json`, on
-by default since v0.26.0) now ship project-level pre-tool-use hooks, which meets ADR-0003's revisit
-condition. Whether the template generates adapters for them is open (#3).
+  selected). DeepSeek Harness and the Copilot cloud agent get no pre-tool-use refusals from the
+  template: their gates are the git hooks and CI (ADR-0011 for DeepSeek Harness).
 
 ## Matrix
 
@@ -32,9 +30,9 @@ condition. Whether the template generates adapters for them is open (#3).
 | --- | --- | --- | --- | --- | --- | --- |
 | Instructions | `CLAUDE.md` (`@AGENTS.md`) | `AGENTS.md` | `AGENTS.md` | `AGENTS.md` | `AGENTS.md` | `AGENTS.md` via `.gemini/settings.json` |
 | Nested `AGENTS.md` | yes | yes (concatenated root → cwd) | yes | yes | yes | via settings |
-| Skills | `.claude/skills` → `.agents/skills` | `.agents/skills` | `.agents/skills` | `.agents/skills` | `.agents/skills` | `.agents/skills` (native alias, which wins over the `.gemini/skills` link) |
+| Skills | `.claude/skills` → `.agents/skills` | `.agents/skills` | `.agents/skills` | `.agents/skills` | `.agents/skills` | `.agents/skills` (native alias) |
 | Session-start status | `SessionStart` hook | `SessionStart` hook | — | via import | CLI: `.claude/settings.json` when generated | — |
-| Pre-tool-use refusals | `PreToolUse` (Edit, Write, Bash) | `PreToolUse` (Bash, apply_patch), after `/hooks` trust | — | `.claude/settings.json` import; Cursor `beforeShellExecution` payload also understood | CLI: `.claude/settings.json` when generated; cloud agent: — | — |
+| Pre-tool-use refusals | `PreToolUse` (Edit, Write, Bash) | `PreToolUse` (Bash, apply_patch), after `/hooks` trust | — | `.claude/settings.json` import; Cursor `beforeShellExecution` payload also understood | CLI: `.claude/settings.json` when generated; cloud agent: — | `BeforeTool` (write_file, replace, run_shell_command), after trusting the project hooks |
 | Fresh-context reviewer | `reviewer` subagent | `review-prompt.mjs \| codex exec -` | subagent | subagent / headless | headless | headless |
 | Parallel lanes | `lanes.mjs` (or native worktrees) | `lanes.mjs` | `lanes.mjs` | `lanes.mjs` | `lanes.mjs` | `lanes.mjs` |
 | Authority | git hooks + CI | git hooks + CI | git hooks + CI | git hooks + CI | git hooks + CI | git hooks + CI |
@@ -69,9 +67,12 @@ fails closed when a hook errors, so the hook commands fall back to the git root 
 `CLAUDE_PROJECT_DIR` is unset. The cloud agent loads only `.github/hooks/*.json`; the template ships
 none, so its gates are CI plus CODEOWNERS.
 
-**Gemini CLI** reads `AGENTS.md` through `context.fileName`, and skills from `.agents/skills`, an
-alias that takes precedence over `.gemini/skills`. It has project hooks since v0.26.0, but the
-template generates none for it yet: its gates are the git hooks and CI.
+**Gemini CLI** reads `AGENTS.md` through `context.fileName`, and skills from `.agents/skills`, its
+generic alias for `.gemini/skills`. Project hooks are on by default since v0.26.0: the `BeforeTool`
+hook runs `agent-hook.mjs` on `write_file`, `replace` and `run_shell_command`, and exit code 2
+blocks the call with the reason. Gemini fingerprints project hooks: review and accept them once,
+and again after a template update changes them. No session-start hook: Gemini injects only JSON
+`additionalContext`, and `AGENTS.md` already makes the agent run `status.mjs`.
 
 ## Adding a harness
 

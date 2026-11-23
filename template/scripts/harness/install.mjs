@@ -1,7 +1,7 @@
 // One-time setup, run by the human after generating or cloning the project.
 //   node scripts/harness/install.mjs
-// Activates the git hooks, checks the Node version and repairs the skills links of the Claude Code
-// and Gemini CLI adapters (symlinks can be lost on Windows checkouts).
+// Activates the git hooks, checks the Node version and repairs the skills link of the Claude Code
+// adapter (symlinks can be lost on Windows checkouts).
 import { chmodSync, existsSync, lstatSync, readdirSync, symlinkSync } from "node:fs";
 import { join } from "node:path";
 import { git, repoRoot } from "./lib.mjs";
@@ -19,7 +19,7 @@ for (const hook of readdirSync(join(root, ".githooks"))) chmodSync(join(root, ".
 console.log("✔ git hooks active (.githooks)");
 
 // .claude/skills belongs to the Claude Code adapter only (CLAUDE.md), not to Cursor.
-const adapters = [...(existsSync(join(root, "CLAUDE.md")) ? [".claude"] : []), ".gemini"];
+const adapters = existsSync(join(root, "CLAUDE.md")) ? [".claude"] : [];
 for (const adapter of adapters) {
   const skills = join(root, adapter, "skills");
   if (!existsSync(join(root, adapter)) || isLink(skills) || existsSync(skills)) continue;

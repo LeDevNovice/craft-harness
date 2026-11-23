@@ -21,6 +21,9 @@ Versions are git tags; `copier update` moves a project between them.
   unset, and `agent-hook.mjs` reads the `path` argument. Copilot CLI runs that file: its edits went
   unchecked, and a missing `CLAUDE_PROJECT_DIR` made the hook fail, which Copilot turns into a
   refusal of every tool call. The harness docs now say that Copilot and Gemini CLI ship hooks (#3).
+- Feature: Gemini CLI gets a `BeforeTool` hook in `.gemini/settings.json` that runs `agent-hook.mjs`
+  on `write_file`, `replace` and `run_shell_command`; the redundant `.gemini/skills` link is gone, as
+  Gemini reads `.agents/skills` (#3, ADR-0012).
 
 ## v0.1.0 — 2026-11-21
 

@@ -107,6 +107,16 @@ function runVariant({ data }, dir) {
     if (r.status !== 2) throw new Error(`.claude/settings.json hook without CLAUDE_PROJECT_DIR: exit ${r.status}\n${r.stderr}`);
     console.log("  ✔ refused: Copilot-style edit through .claude/settings.json without CLAUDE_PROJECT_DIR");
   }
+  if (harnesses.includes("gemini-cli")) {
+    // The generated BeforeTool hook, as Gemini CLI runs it, from a subfolder; skills come from .agents/skills.
+    if (existsSync(join(dir, ".gemini/skills"))) throw new Error(".gemini/skills should not be generated");
+    const settings = JSON.parse(readFileSync(join(dir, ".gemini/settings.json"), "utf8"));
+    const command = settings.hooks.BeforeTool[0].hooks[0].command;
+    const payload = JSON.stringify({ hook_event_name: "BeforeTool", tool_name: "replace", tool_input: { file_path: join(dir, "AGENTS.md"), old_string: "a", new_string: "b" } });
+    const r = spawnSync("sh", ["-c", command], { cwd: join(dir, "docs"), env: { ...env, GEMINI_PROJECT_DIR: dir }, encoding: "utf8", input: payload });
+    if (r.status !== 2) throw new Error(`.gemini/settings.json BeforeTool hook: exit ${r.status}\n${r.stderr}`);
+    console.log("  ✔ refused: Gemini edit of AGENTS.md through .gemini/settings.json");
+  }
 
   // Agent: the honest path — test naming the requirement, code, plan status, progress note, planned commit.
   const testFile = ts ? "src/greet.test.ts" : "tests/test_greet.py";

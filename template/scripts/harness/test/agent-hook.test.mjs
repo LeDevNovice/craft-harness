@@ -86,6 +86,22 @@ describe("agent hook — other harnesses", () => {
     assert.equal(edit("Edit", `${repo.dir}/src/a.ts`).code, 0);
   });
 
+  it("reads Gemini CLI BeforeTool payloads", () => {
+    const tool = (tool_name, tool_input) => hook({ hook_event_name: "BeforeTool", tool_name, tool_input });
+    assert.equal(tool("write_file", { file_path: "AGENTS.md", content: "x" }).code, 2);
+    assert.equal(
+      tool("replace", { file_path: `${repo.dir}/docs/specs/product.md`, old_string: "a", new_string: "b" })
+        .code,
+      2,
+    );
+    assert.equal(tool("run_shell_command", { command: "git commit --no-verify -m x" }).code, 2);
+    assert.equal(
+      tool("replace", { file_path: `${repo.dir}/src/a.ts`, old_string: "a", new_string: "b" }).code,
+      0,
+    );
+    assert.equal(tool("run_shell_command", { command: "pnpm test" }).code, 0);
+  });
+
   it("answers Cursor's beforeShellExecution on stdout", () => {
     const denied = JSON.parse(hook({ hook_event_name: "beforeShellExecution", command: "git push -f" }).out);
     assert.equal(denied.permission, "deny");
