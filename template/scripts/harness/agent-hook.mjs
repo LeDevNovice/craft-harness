@@ -46,7 +46,7 @@ if (event === "beforeShellExecution") {
 }
 
 const problem = ["Edit", "Write", "MultiEdit", "NotebookEdit"].includes(tool)
-  ? pathProblem(args.file_path ?? args.notebook_path)
+  ? pathProblem(args.file_path ?? args.notebook_path ?? args.path) // `path`: Copilot CLI edits
   : tool === "apply_patch"
     ? patchProblem(String(args.command ?? args.input ?? args.patch ?? ""))
     : tool === "Bash" || tool === "Shell"

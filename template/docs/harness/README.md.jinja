@@ -64,7 +64,7 @@ work is not parallel; keep the plan sequential unless the lines touch disjoint p
 | Codex | `AGENTS.md`, `.agents/skills` | `.codex/hooks.json` (trust it once with `/hooks`) |
 | DeepSeek Harness | `AGENTS.md`, `.agents/skills` | none: git hooks and CI |
 | Cursor | `AGENTS.md`, `.agents/skills` | `.claude/settings.json` (third-party import, on by default) |
-| GitHub Copilot | `AGENTS.md`, `.agents/skills` | none: git hooks and CI |
+| GitHub Copilot | `AGENTS.md`, `.agents/skills` | {% if 'claude-code' in harnesses or 'cursor' in harnesses %}CLI: `.claude/settings.json`; cloud agent: none, git hooks and CI{% else %}none: git hooks and CI{% endif %} |
 | Gemini CLI | `AGENTS.md` through `.gemini/settings.json` | none: git hooks and CI |
 
 Whatever the harness, the git hooks and CI are the authority. Harness hooks only fail earlier.

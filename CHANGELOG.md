@@ -17,6 +17,10 @@ Versions are git tags; `copier update` moves a project between them.
 - Change: DeepSeek Harness is supported through the standards (`AGENTS.md`, `.agents/skills`, git
   hooks, CI) instead of a hooks adapter, and is no longer selected by default. Its bridge never
   matched the generated `.claude/settings.json` (#2, ADR-0011).
+- Fix: `.claude/settings.json` hook commands fall back to the git root when `CLAUDE_PROJECT_DIR` is
+  unset, and `agent-hook.mjs` reads the `path` argument. Copilot CLI runs that file: its edits went
+  unchecked, and a missing `CLAUDE_PROJECT_DIR` made the hook fail, which Copilot turns into a
+  refusal of every tool call. The harness docs now say that Copilot and Gemini CLI ship hooks (#3).
 
 ## v0.1.0 — 2026-11-21
 

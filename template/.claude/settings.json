@@ -1,12 +1,12 @@
 {
-  "$comment": "Claude Code hook format, also consumed by Cursor (third-party import). Git hooks and CI stay the authority for every harness.",
+  "$comment": "Claude Code hook format, also run by Cursor (third-party import) and GitHub Copilot CLI (which reads .claude/settings.json). Commands fall back to the git root when CLAUDE_PROJECT_DIR is unset. Git hooks and CI stay the authority for every harness.",
   "hooks": {
     "SessionStart": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/harness/status.mjs\" --no-check"
+            "command": "node \"${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel)}/scripts/harness/status.mjs\" --no-check"
           }
         ]
       }
@@ -15,7 +15,10 @@
       {
         "matcher": "Edit|Write|MultiEdit|NotebookEdit|Bash",
         "hooks": [
-          { "type": "command", "command": "node \"$CLAUDE_PROJECT_DIR/scripts/harness/agent-hook.mjs\"" }
+          {
+            "type": "command",
+            "command": "node \"${CLAUDE_PROJECT_DIR:-$(git rev-parse --show-toplevel)}/scripts/harness/agent-hook.mjs\""
+          }
         ]
       }
     ]

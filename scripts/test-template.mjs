@@ -98,6 +98,15 @@ function runVariant({ data }, dir) {
   }
   const hook = sh("node", ["scripts/harness/agent-hook.mjs"], {}, JSON.stringify({ tool_name: "Bash", tool_input: { command: "git commit --no-verify -m x" } }));
   if (hook.code !== 2) throw new Error("agent hook did not refuse --no-verify");
+  if (claudeHooks) {
+    // The generated command, as Copilot CLI runs it: plain sh, no CLAUDE_PROJECT_DIR, cwd in a subfolder.
+    const settings = JSON.parse(readFileSync(join(dir, ".claude/settings.json"), "utf8"));
+    const command = settings.hooks.PreToolUse[0].hooks[0].command;
+    const payload = JSON.stringify({ hook_event_name: "PreToolUse", tool_name: "Edit", tool_input: { path: join(dir, "docs/specs/product.md") } });
+    const r = spawnSync("sh", ["-c", command], { cwd: join(dir, "docs"), env: Object.fromEntries(Object.entries(env).filter(([k]) => k !== "CLAUDE_PROJECT_DIR")), encoding: "utf8", input: payload });
+    if (r.status !== 2) throw new Error(`.claude/settings.json hook without CLAUDE_PROJECT_DIR: exit ${r.status}\n${r.stderr}`);
+    console.log("  ✔ refused: Copilot-style edit through .claude/settings.json without CLAUDE_PROJECT_DIR");
+  }
 
   // Agent: the honest path — test naming the requirement, code, plan status, progress note, planned commit.
   const testFile = ts ? "src/greet.test.ts" : "tests/test_greet.py";
