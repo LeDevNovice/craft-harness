@@ -4,7 +4,7 @@
 //   node scripts/test-template.mjs [--keep]
 // Needs: git, Node ≥ 22, uv (uvx copier), pnpm for the TypeScript variants. Run from a clean, committed checkout.
 import { spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 
@@ -13,7 +13,7 @@ const keep = process.argv.includes("--keep");
 const variants = [
   { name: "typescript-default", data: { project_name: "Demo App", owner: "octocat" } },
   { name: "typescript-all-harnesses", data: { project_name: "All Harnesses", owner: "octocat", harnesses: ["claude-code", "codex", "deepseek-harness", "cursor", "copilot", "gemini-cli"] } },
-  { name: "agnostic-codex-copilot", data: { project_name: "Py Service", owner: "octocat", profile: "none", harnesses: ["codex", "copilot", "gemini-cli"], requirement_prefix: "RG", plan_prefix: "J" } },
+  { name: "agnostic-codex-copilot", data: { project_name: "Py Service", owner: "octocat", profile: "none", harnesses: ["codex", "copilot", "gemini-cli", "deepseek-harness"], requirement_prefix: "RG", plan_prefix: "J" } },
 ];
 
 const env = Object.fromEntries(Object.entries(process.env).filter(([k]) => !k.startsWith("HARNESS_")));
@@ -43,6 +43,10 @@ function runVariant({ data }, dir) {
   const ts = (data.profile ?? "typescript") === "typescript";
   const plan = data.plan_prefix ?? "M";
   const req = data.requirement_prefix ?? "REQ";
+  const harnesses = data.harnesses ?? ["claude-code", "codex"];
+  const claudeHooks = harnesses.includes("claude-code") || harnesses.includes("cursor");
+  if (existsSync(join(dir, ".claude/settings.json")) !== claudeHooks)
+    throw new Error(`.claude/settings.json should ${claudeHooks ? "" : "not "}be generated for ${harnesses.join(", ")}`);
   const sh = (cmd, cmdArgs, extra = {}, input) => run(cmd, cmdArgs, dir, extra, input);
 
   must("node", ["scripts/harness/install.mjs"], dir);

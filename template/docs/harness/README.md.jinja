@@ -62,7 +62,7 @@ work is not parallel; keep the plan sequential unless the lines touch disjoint p
 | --- | --- | --- |
 | Claude Code | `CLAUDE.md` → `AGENTS.md`, `.claude/skills` → `.agents/skills`, `.claude/agents/reviewer.md` | `.claude/settings.json` hooks |
 | Codex | `AGENTS.md`, `.agents/skills` | `.codex/hooks.json` (trust it once with `/hooks`) |
-| DeepSeek Harness | `AGENTS.md`, `.agents/skills` | `.claude/settings.json` through its Claude Code hooks bridge |
+| DeepSeek Harness | `AGENTS.md`, `.agents/skills` | none: git hooks and CI |
 | Cursor | `AGENTS.md`, `.agents/skills` | `.claude/settings.json` (third-party import, on by default) |
 | GitHub Copilot | `AGENTS.md`, `.agents/skills` | none: git hooks and CI |
 | Gemini CLI | `AGENTS.md` through `.gemini/settings.json` | none: git hooks and CI |

@@ -1,6 +1,6 @@
 # ADR-0003 — Which harnesses get adapters
 
-- **Status**: Accepted
+- **Status**: Accepted, amended by [ADR-0011](0011-deepseek-harness-through-the-standards.md) (DeepSeek Harness)
 - **Date**: 2026-11-21
 
 ## Context

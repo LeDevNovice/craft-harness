@@ -1,5 +1,5 @@
 // Pre-tool-use hook shared by the harness adapters (Claude Code and Cursor via .claude/settings.json,
-// Codex via .codex/hooks.json, DeepSeek Harness via its Claude Code hooks bridge).
+// Codex via .codex/hooks.json).
 // Refuses, before it happens, an edit to a human-owned file or a command that bypasses or weakens the
 // gates. It is a convenience: the git hooks and CI stay the authority for every harness.
 // Protocol: JSON on stdin; exit 2 + reason on stderr refuses the call (Claude Code, Codex);

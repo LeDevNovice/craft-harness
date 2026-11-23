@@ -18,7 +18,7 @@ git(["config", "core.hooksPath", ".githooks"], { cwd: root });
 for (const hook of readdirSync(join(root, ".githooks"))) chmodSync(join(root, ".githooks", hook), 0o755);
 console.log("✔ git hooks active (.githooks)");
 
-// .claude/skills belongs to the Claude Code adapter only (CLAUDE.md), not to Cursor or DeepSeek Harness.
+// .claude/skills belongs to the Claude Code adapter only (CLAUDE.md), not to Cursor.
 const adapters = [...(existsSync(join(root, "CLAUDE.md")) ? [".claude"] : []), ".gemini"];
 for (const adapter of adapters) {
   const skills = join(root, adapter, "skills");
