@@ -1,6 +1,6 @@
 # ADR-0003 — Which harnesses get adapters
 
-- **Status**: Accepted, amended by [ADR-0011](0011-deepseek-harness-through-the-standards.md) (DeepSeek Harness)
+- **Status**: Accepted, amended by [ADR-0011](0011-deepseek-harness-through-the-standards.md) (DeepSeek Harness); revisit condition met for Copilot and Gemini CLI (#3)
 - **Date**: 2026-11-21
 
 ## Context

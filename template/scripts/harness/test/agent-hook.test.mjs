@@ -77,6 +77,15 @@ describe("agent hook — other harnesses", () => {
     assert.equal(call("src/a.ts").code, 0);
   });
 
+  it("reads the path argument of Copilot CLI edits (Claude-format hooks)", () => {
+    // Copilot CLI runs .claude/settings.json, reports Claude tool names, and its edit tools pass `path`.
+    const edit = (tool_name, path) =>
+      hook({ hook_event_name: "PreToolUse", tool_name, tool_input: { path, old_str: "a", new_str: "b" } });
+    assert.equal(edit("Edit", `${repo.dir}/docs/specs/product.md`).code, 2);
+    assert.equal(edit("Write", "AGENTS.md").code, 2);
+    assert.equal(edit("Edit", `${repo.dir}/src/a.ts`).code, 0);
+  });
+
   it("answers Cursor's beforeShellExecution on stdout", () => {
     const denied = JSON.parse(hook({ hook_event_name: "beforeShellExecution", command: "git push -f" }).out);
     assert.equal(denied.permission, "deny");
