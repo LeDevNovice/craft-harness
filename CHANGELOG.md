@@ -2,6 +2,16 @@
 
 Versions are git tags; `copier update` moves a project between them.
 
+## Unreleased
+
+### Skills
+
+- New skill `draft-specs`: the agent drafts the product and technical specs, requirements (EARS
+  patterns, one acceptance case each), stack ADRs and glossary from the human's own material, as a
+  proposal in `docs/plan/proposals/<date>/` that mirrors the repository paths. Every statement cites
+  its source or is marked proposed and listed in `questions.md` (ADR-0014). Existing projects get it
+  with `copier update`; nothing else changes.
+
 ## v0.2.0 — 2026-11-23
 
 Review of v0.1.0 against the gates' own promises and the harnesses of November 2026: three gate

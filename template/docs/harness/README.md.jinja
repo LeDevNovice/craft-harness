@@ -10,7 +10,7 @@ make sure it was not done badly.
 | Layer | Files | Role |
 | --- | --- | --- |
 | Instructions (advisory) | `AGENTS.md` + nested `AGENTS.md`{% if 'claude-code' in harnesses %}, `CLAUDE.md` (imports it){% endif %} | Short map loaded every session; the nearest file to the edited code wins |
-| Procedures (on demand) | `.agents/skills/*/SKILL.md` | Start a session, implement a line, decide, review, test requirements, close a milestone, run lanes, draft a plan, audit the harness |
+| Procedures (on demand) | `.agents/skills/*/SKILL.md` | Start a session, implement a line, decide, review, test requirements, close a milestone, run lanes, draft specs, draft a plan, audit the harness |
 | Sources of truth | `docs/specs/`, `docs/requirements.md`, `docs/adr/`, `CONTEXT.md` | What to build, in which words, under which decisions |
 | State | `docs/plan/plan.json`, `docs/plan/progress/`, git history | Where the work stands, carried from one fresh session to the next |
 | Gates (deterministic) | `.githooks/`, `scripts/harness/*.mjs`, CI | Refuse out-of-order commits, unplanned messages, deleted or skipped tests, uncovered requirements, edits to human-owned files, weakened thresholds |
@@ -37,8 +37,10 @@ messages), so require a review on every pull request too.
 ## Then
 
 1. Write `docs/specs/product.md`, `technical.md` (with ranked quality attributes) and
-   `docs/requirements.md`. The agent can draft requirements and a plan as a proposal: ask it to apply
-   skill `plan-from-spec`.
+   `docs/requirements.md`. The agent can draft them from your own material (brief, notes, research)
+   with skill `draft-specs`: every statement cites its source and the gaps come back as questions.
+   Then it can draft requirements and a plan with skill `plan-from-spec`. Both are proposals in
+   `docs/plan/proposals/` that you review and adopt.
 2. Adopt the plan of the first milestone, mark checkpoint A done:
    `HARNESS_HUMAN=1 HARNESS_PLAN_EDIT=1 HARNESS_HUMAN_GATE=A git commit …`
 3. Start sessions. One session = one plan line, in a fresh context. Suggested first message:

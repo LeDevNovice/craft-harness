@@ -28,5 +28,6 @@ only for lines that are truly independent (skill `run-lanes`).
 - `progress/<id>.md` — one note per finished or blocked line: what, evidence, review, decisions,
   follow-ups. One file per line keeps parallel lanes free of merge conflicts.
 - `checkpoints/<gate>.md` — evidence pack for a human checkpoint (skill `close-milestone`).
-- `proposals/<date>/` — plans and requirements drafted by the agent, adopted or not by the human.
+- `proposals/<date>/` — specifications, plans and requirements drafted by the agent, adopted or not
+  by the human.
 - `audits/<date>.md` — harness audits (skill `audit-harness`).
