@@ -26,7 +26,7 @@
         {
           "id": "{{ plan_prefix }}0.{% if profile == 'typescript' %}3{% else %}2{% endif %}",
           "message": "docs: specify the first slice and adopt its plan",
-          "content": "Human: write docs/specs/product.md and technical.md (ranked quality attributes), docs/requirements.md, ADRs for the stack, then the plan of milestone {{ plan_prefix }}1. The agent may draft requirements and plan as a proposal (skill plan-from-spec).",
+          "content": "Human: write docs/specs/product.md and technical.md (ranked quality attributes), docs/requirements.md, ADRs for the stack, then the plan of milestone {{ plan_prefix }}1. The agent may draft the specs from your material (skill draft-specs), then requirements and plan (skill plan-from-spec), as proposals.",
           "verification": "Specs, requirements and milestone {{ plan_prefix }}1 committed by the human; `node scripts/harness/verify.mjs` is green",
           "status": "todo",
           "humanGate": "A"

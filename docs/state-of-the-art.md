@@ -181,9 +181,35 @@ Sources: [Copier — comparisons](https://copier.readthedocs.io/en/stable/compar
 | Fitness functions | Architecture rules checked by tools | dependency-cruiser in the TypeScript profile |
 | Mutation testing | Surviving mutants are missing tests | `test-requirements` |
 | Proportionality (YAGNI) | Build what the current line needs; write down what is absent and when to add it | `decide` §6, `absent.md` in plan proposals |
-| Spec-driven development | Specs before code; plans of small verifiable tasks | `docs/specs/`, `plan-from-spec`, `plan.json` |
+| Spec-driven development | Specs before code; plans of small verifiable tasks | `docs/specs/`, `draft-specs`, `plan-from-spec`, `plan.json` |
 
 Sources: [Canon TDD](https://newsletter.kentbeck.com/p/canon-tdd) ·
 [Conventional Commits](https://www.conventionalcommits.org/) · [MADR](https://adr.github.io/madr/) ·
 [Böckeler, *Understanding spec-driven development*](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html) ·
 [Osmani, *How to write a good spec for AI agents*](https://addyosmani.com/blog/good-spec/)
+
+## 12. Specifications: the agent drafts from sources, the human decides
+
+**Finding.** Studies of LLM-written requirements find usable drafts whose completeness and
+precision track the quality of the input, and which still need human revision; ambiguous and
+unfeasible requirements are the recurring defect. Spec-driven tools converge on the same answers:
+requirements in EARS patterns (Kiro), a few clarification questions ranked by impact and asked one
+at a time before planning (Spec Kit), and short specs, because reviewing long generated Markdown is
+where the time goes (Böckeler). For skills themselves, SkillsBench measured that curated skills
+raise success rates while self-generated ones do not help, and that focused skills beat
+comprehensive documentation; Anthropic's authoring guidance says the same (concise, a checklist,
+a validate-fix loop, evaluation before documentation).
+
+**Consequence.** Skill `draft-specs`, written as short as the other skills: specs drafted only from
+the human's material, as a proposal in `docs/plan/proposals/`; every statement cites a source or is
+marked proposed and listed in `questions.md`; requirements in EARS patterns with a given/when/then
+case each; stack choices as Proposed ADRs; a check-fix loop, then a fresh-context reviewer when the
+harness can run one. Framing the idea itself stays outside the template (ADR-0014).
+
+Sources: [Exploring LLMs for requirements specification in an IT consulting company](https://arxiv.org/abs/2507.19113) ·
+[Kiro, feature specs](https://kiro.dev/docs/specs/feature-specs/) ·
+[EARS](https://en.wikipedia.org/wiki/Easy_Approach_to_Requirements_Syntax) ·
+[Spec Kit, `clarify`](https://github.com/github/spec-kit/blob/main/templates/commands/clarify.md) ·
+[Böckeler, *Understanding spec-driven development*](https://martinfowler.com/articles/exploring-gen-ai/sdd-3-tools.html) ·
+[SkillsBench](https://arxiv.org/abs/2602.12670) ·
+[Anthropic, skill authoring best practices](https://docs.claude.com/en/docs/agents-and-tools/agent-skills/best-practices)

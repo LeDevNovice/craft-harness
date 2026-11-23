@@ -19,6 +19,7 @@ table; you decide.
 | Skill `decide` and `Decision:` lines | Agents pick their first idea silently | Decisions that a reviewer or the human would have challenged | Drop the two-option rule if decisions are consistently sound |
 | Human-owned files + agent hook | Agents "fix" a spec or a gate instead of the code | Hook refusals; owned-file guard refusals | None advised: the boundary is the point |
 | Stop conditions | Agents push through ambiguity and produce plausible wrong code | Useful stop reports; few false stops | Remove a condition that only produces false stops |
+| Specs drafted as sourced proposals (skill `draft-specs`) | Drafting from a brief, a model fills the gaps with plausible inventions and writes vague or untestable rules | Statements you strike or rewrite at adoption; questions whose answer changed the specs | Draft the next specs from the same material without the source and question rules; count what you strike |
 | Human checkpoints | The plan needs product feedback the agent cannot get | Plans changed after a checkpoint | Space checkpoints further apart |
 | Parallel lanes off by default | Parallel writers make conflicting implicit decisions | Integration conflicts, rework after merge | Run two declared-independent lines in lanes and measure rework |
 | Short `AGENTS.md` (≈ 100 lines) | Long context files lower success and raise cost | Rules followed; none ignored | Move rarely used rules into skills or nested files |

@@ -17,3 +17,4 @@ Decisions about the template itself (generated projects get their own `docs/adr/
 | [0011](0011-deepseek-harness-through-the-standards.md) | DeepSeek Harness supported through the standards | Accepted (amends 0003) |
 | [0012](0012-gemini-cli-hook-adapter.md) | Gemini CLI gets a hook adapter | Accepted (amends 0003, 0002) |
 | [0013](0013-copilot-cloud-agent-setup-steps.md) | Copilot cloud agent: activate the git hooks through setup steps | Accepted (amends 0003) |
+| [0014](0014-specifications-drafted-as-sourced-proposals.md) | Specifications drafted as sourced proposals, framing left out | Accepted |

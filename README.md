@@ -35,8 +35,9 @@ AGENTS.md                  ≈100-line map: session start, sources of truth, loo
 CLAUDE.md                  @AGENTS.md + Claude Code notes                         (adapter)
 CONTEXT.md                 domain language: one term, one name in code
 harness.config.json        every rule the gates apply (owned paths, id patterns, tests, thresholds, commands)
-.agents/skills/            9 Agent Skills: start-session · implement-line · decide · review-change ·
-                           test-requirements · close-milestone · run-lanes · plan-from-spec · audit-harness
+.agents/skills/            10 Agent Skills: start-session · implement-line · decide · review-change ·
+                           test-requirements · close-milestone · run-lanes · draft-specs ·
+                           plan-from-spec · audit-harness
 .claude/  .codex/  .gemini/  harness adapters: session-start status, pre-tool-use refusals, reviewer subagent
 .githooks/                 pre-commit · commit-msg · pre-push → scripts/harness
 scripts/harness/           status · verify · plan-check · requirements-check · guard · commit-msg ·
@@ -103,8 +104,9 @@ node scripts/harness/verify.mjs                             # green
 git add -A && HARNESS_HUMAN=1 git commit -m "chore: add the agent harness"
 ```
 
-Then write `docs/specs/` and `docs/requirements.md` (the agent can draft a plan for you with skill
-`plan-from-spec`), adopt the plan, and start sessions with:
+Then write `docs/specs/` and `docs/requirements.md` (the agent can draft them from your brief or
+notes with skill `draft-specs`, then a plan with skill `plan-from-spec`), adopt the plan, and start
+sessions with:
 
 > Apply skill `start-session`, then `implement-line` for the next plan line. One line only.
 > Stop and report if a stop condition of AGENTS.md occurs.

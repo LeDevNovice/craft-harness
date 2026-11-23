@@ -60,6 +60,15 @@ function runVariant({ data }, dir) {
   must("git", ["add", "-A"], dir);
   must("git", ["commit", "-q", "-m", "chore: add the agent harness"], dir, { HARNESS_HUMAN: "1" });
 
+  // Agent: a specification proposal (skill draft-specs) is committed towards checkpoint A; owned files stay untouched.
+  const gateId = JSON.parse(readFileSync(join(dir, "docs/plan/plan.json"), "utf8")).milestones[0].lines.at(-1).id;
+  mkdirSync(join(dir, "docs/plan/proposals/2026-01-01/docs/specs"), { recursive: true });
+  writeFileSync(join(dir, "docs/plan/proposals/2026-01-01/docs/specs/product.md"), "# Product specification\n\n- REQ-01 (source: brief §1)\n");
+  writeFileSync(join(dir, "docs/plan/proposals/2026-01-01/questions.md"), "# Open questions\n");
+  must("git", ["add", "-A"], dir);
+  must("git", ["commit", "-q", "-m", `docs: propose specifications 2026-01-01\n\nPlan: ${gateId}`], dir);
+  console.log("  ✔ accepted: specification proposal towards checkpoint A");
+
   // Checkpoint A: the human writes a requirement and adopts a first milestone with one line.
   const planPath = join(dir, "docs/plan/plan.json");
   const p = JSON.parse(readFileSync(planPath, "utf8"));
