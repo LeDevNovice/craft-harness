@@ -69,6 +69,7 @@ _exclude:
   - "{% if 'claude-code' not in harnesses %}CLAUDE.md{% endif %}"
   - "{% if 'codex' not in harnesses %}.codex{% endif %}"
   - "{% if 'gemini-cli' not in harnesses %}.gemini{% endif %}"
+  - "{% if 'copilot' not in harnesses %}.github/workflows/copilot-setup-steps.yml*{% endif %}"
   - "{% if profile != 'typescript' %}src{% endif %}"
   - "{% if profile != 'typescript' %}package.json*{% endif %}"
   - "{% if profile != 'typescript' %}tsconfig*.json{% endif %}"
