@@ -1,6 +1,6 @@
 # ADR-0002 — Open standards as the single source
 
-- **Status**: Accepted
+- **Status**: Accepted, amended by [ADR-0012](0012-gemini-cli-hook-adapter.md) (no `.gemini/skills` link)
 - **Date**: 2026-11-21
 
 ## Context

@@ -1,8 +1,8 @@
 // Pre-tool-use hook shared by the harness adapters (Claude Code and Cursor via .claude/settings.json,
-// Codex via .codex/hooks.json).
+// Codex via .codex/hooks.json, Gemini CLI via .gemini/settings.json).
 // Refuses, before it happens, an edit to a human-owned file or a command that bypasses or weakens the
 // gates. It is a convenience: the git hooks and CI stay the authority for every harness.
-// Protocol: JSON on stdin; exit 2 + reason on stderr refuses the call (Claude Code, Codex);
+// Protocol: JSON on stdin; exit 2 + reason on stderr refuses the call (Claude Code, Codex, Gemini CLI);
 // Cursor's beforeShellExecution gets a JSON permission answer on stdout.
 import { HUMAN_VARIABLES, config, matchesAny, repoPath, repoRoot } from "./lib.mjs";
 
@@ -45,11 +45,11 @@ if (event === "beforeShellExecution") {
   process.exit(0);
 }
 
-const problem = ["Edit", "Write", "MultiEdit", "NotebookEdit"].includes(tool)
+const problem = ["Edit", "Write", "MultiEdit", "NotebookEdit", "write_file", "replace"].includes(tool)
   ? pathProblem(args.file_path ?? args.notebook_path ?? args.path) // `path`: Copilot CLI edits
   : tool === "apply_patch"
     ? patchProblem(String(args.command ?? args.input ?? args.patch ?? ""))
-    : tool === "Bash" || tool === "Shell"
+    : tool === "Bash" || tool === "Shell" || tool === "run_shell_command"
       ? commandProblem(String(args.command ?? ""))
       : null;
 if (problem) {
